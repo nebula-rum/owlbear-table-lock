@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: owlbear-table-lock
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: https://www.owlbear.rodeo

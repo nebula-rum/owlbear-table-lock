@@ -1,0 +1,31 @@
+{
+  "name": "owlbear-table-lock",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@owlbear-rodeo/sdk": "3.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.4",
+    "jsdom": "26.1.0",
+    "typescript": "5.7.3",
+    "vite": "6.4.3",
+    "vitest": "3.2.7"
+  },
+  "license": "MIT",
+  "description": "Keep an Owlbear Rodeo scene framed to a chosen tabletop background.",
+  "keywords": [
+    "owlbear-rodeo",
+    "vtt",
+    "ttrpg",
+    "extension",
+    "tabletop"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Table Lock",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "description": "Keep an Owlbear scene framed to a chosen tabletop background.",
+  "background_url": "/background.html",
+  "action": {
+    "title": "Table Lock",
+    "icon": "/icon.svg",
+    "popover": "/",
+    "height": 330,
+    "width": 320
+  },
+  "author": "Table Lock contributors"
+}
