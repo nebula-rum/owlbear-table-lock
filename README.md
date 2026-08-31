@@ -24,7 +24,7 @@ Once Table Lock is hosted, install it in Owlbear Rodeo by adding the public `man
 For local development, use:
 
 ```text
-http://localhost:5173/manifest.json
+http://localhost:5173/owlbear-table-lock/manifest.json
 ```
 
 ## Using Table Lock
@@ -56,7 +56,7 @@ npm run dev -- --host 0.0.0.0
 Then add this custom extension in Owlbear Rodeo:
 
 ```text
-http://localhost:5173/manifest.json
+http://localhost:5173/owlbear-table-lock/manifest.json
 ```
 
 Useful commands:
@@ -79,6 +79,8 @@ Vite writes the static extension to `dist/`. The hosted site must make `dist/man
 ## Publish with GitHub + Render
 
 This repository includes `render.yaml`, so it can be deployed as a Render static site.
+
+> **Note:** the project is currently configured for GitHub Pages, which serves the site under the `/owlbear-table-lock/` subpath (see `base` in `vite.config.ts` and the paths in `public/manifest.json`). Render serves a static site at the domain root, so a Render deployment built from this config as-is will 404 on its own assets. To use Render instead, override `base` to `/` for that build and drop the `/owlbear-table-lock/` prefix from the manifest paths.
 
 1. Create a new GitHub repository and push this project to it.
 2. In Render, create a new Blueprint or Static Site from that repository.

@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
+  base: "/owlbear-table-lock/",
   test: {
     environment: "jsdom",
   },
