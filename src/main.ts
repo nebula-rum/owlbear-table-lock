@@ -1,11 +1,12 @@
 import OBR from "@owlbear-rodeo/sdk";
 import "./style.css";
 import {
-  clearTableItemId,
+  clearTable,
   fitConfiguredTable,
   getConfiguredTableBounds,
   readConfig,
   setCurrentSelectionAsTable,
+  setCurrentViewAsTable,
   writeEnabled,
 } from "./state";
 
@@ -20,15 +21,14 @@ app.innerHTML = `
     </div>
     <p id="table-status" class="muted">Checking scene…</p>
     <div class="actions">
+      <button id="set-table" type="button" hidden>Set Selected as Table</button>
+      <button id="set-view-table" type="button" hidden>Set Current View as Table</button>
+      <label id="enable-lock-row" class="toggle-row" hidden>
+        <input id="enable-lock" type="checkbox" />
+        <span>Enable Table Lock</span>
+      </label>
       <button id="fit-table" type="button">Fit Table</button>
-      <div id="gm-controls" hidden>
-        <button id="set-table" type="button">Set Selected as Table</button>
-        <label class="toggle-row">
-          <input id="enable-lock" type="checkbox" />
-          <span>Enable Table Lock</span>
-        </label>
-        <button id="clear-table" type="button" class="secondary">Clear Table</button>
-      </div>
+      <button id="clear-table" type="button" class="secondary" hidden>Clear Table</button>
     </div>
     <p id="message" class="message" aria-live="polite"></p>
     <p class="muted">Zoom and pan locking run continuously while this extension is enabled.</p>
@@ -38,11 +38,13 @@ app.innerHTML = `
 const status = document.querySelector<HTMLElement>("#status")!;
 const tableStatus = document.querySelector<HTMLElement>("#table-status")!;
 const message = document.querySelector<HTMLElement>("#message")!;
-const gmControls = document.querySelector<HTMLElement>("#gm-controls")!;
 const fitButton = document.querySelector<HTMLButtonElement>("#fit-table")!;
 const setButton = document.querySelector<HTMLButtonElement>("#set-table")!;
+const setViewButton = document.querySelector<HTMLButtonElement>("#set-view-table")!;
+const enableLockRow = document.querySelector<HTMLElement>("#enable-lock-row")!;
 const clearButton = document.querySelector<HTMLButtonElement>("#clear-table")!;
 const enableInput = document.querySelector<HTMLInputElement>("#enable-lock")!;
+const gmOnlyElements = [setButton, setViewButton, enableLockRow, clearButton];
 
 let isGm = false;
 
@@ -57,7 +59,7 @@ async function render(): Promise<void> {
       status.textContent = "No scene";
       tableStatus.textContent = "Open a scene to configure Table Lock.";
       fitButton.disabled = true;
-      gmControls.hidden = !isGm;
+      for (const el of gmOnlyElements) el.hidden = !isGm;
       return;
     }
 
@@ -68,11 +70,11 @@ async function render(): Promise<void> {
     status.textContent = config.enabled && hasTable ? "Locked" : "Unlocked";
     tableStatus.textContent = hasTable
       ? "A table boundary is configured for this scene."
-      : config.tableItemId
-        ? "Table object missing. Choose a new table."
+      : config.tableItemId || config.tableBounds
+        ? "Table boundary missing. Choose a new table."
         : "No table boundary configured.";
     fitButton.disabled = !hasTable;
-    gmControls.hidden = !isGm;
+    for (const el of gmOnlyElements) el.hidden = !isGm;
     enableInput.checked = config.enabled;
     enableInput.disabled = !hasTable;
   } catch {
@@ -127,6 +129,14 @@ OBR.onReady(async () => {
     });
   });
 
+  setViewButton.addEventListener("click", () => {
+    void safeAction(async () => {
+      if (!isGm) throw new Error("Only the GM can change Table Lock settings.");
+      await setCurrentViewAsTable();
+      setMessage("Current view is now the table boundary.");
+    });
+  });
+
   enableInput.addEventListener("change", () => {
     void safeAction(async () => {
       if (!isGm) throw new Error("Only the GM can change Table Lock settings.");
@@ -137,7 +147,7 @@ OBR.onReady(async () => {
   clearButton.addEventListener("click", () => {
     void safeAction(async () => {
       if (!isGm) throw new Error("Only the GM can change Table Lock settings.");
-      await clearTableItemId();
+      await clearTable();
       setMessage("Table boundary cleared.");
     });
   });
