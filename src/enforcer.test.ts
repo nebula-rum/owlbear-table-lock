@@ -82,10 +82,22 @@ describe("enforceZoomOnce", () => {
 
   it("does nothing when no table is configured", async () => {
     const env = fakeEnvironment({
-      getConfig: vi.fn().mockResolvedValue({ tableItemId: null, enabled: true }),
+      getConfig: vi.fn().mockResolvedValue({ tableItemId: null, tableBounds: null, enabled: true }),
     });
     await enforceZoomOnce(env);
     expect(env.setScale).not.toHaveBeenCalled();
+  });
+
+  it("enforces zoom and pan when the table is a captured view instead of a tracked item", async () => {
+    const env = fakeEnvironment({
+      getConfig: vi.fn().mockResolvedValue({
+        tableItemId: null,
+        tableBounds: { min: { x: 0, y: 0 }, max: { x: 1600, y: 900 } },
+        enabled: true,
+      }),
+    });
+    await enforceZoomOnce(env);
+    expect(env.setScale).toHaveBeenCalledWith(0.5);
   });
 
   it("does nothing when the configured item is missing", async () => {

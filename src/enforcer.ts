@@ -30,7 +30,7 @@ export const owlbearZoomEnvironment: ZoomEnvironment = {
 export async function enforceZoomOnce(env: ZoomEnvironment): Promise<void> {
   try {
     const config = await env.getConfig();
-    if (!config.enabled || !config.tableItemId) return;
+    if (!config.enabled || (!config.tableItemId && !config.tableBounds)) return;
 
     const bounds = await env.getTableBounds(config);
     if (!bounds) return;
