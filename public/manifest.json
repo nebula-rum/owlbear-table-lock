@@ -7,10 +7,10 @@
   "author": "nebularum",
   "action": {
     "title": "Table Lock",
-    "icon": "/icon.svg",
+    "icon": "/owlbear-table-lock/public/icon.svg",
     "popover": "/",
     "height": 330,
     "width": 320
   },
-  "background_url": "/background.html"
+  "background_url": "/owlbear-table-lock/background.html"
 }
